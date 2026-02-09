@@ -24,40 +24,28 @@ exports.register = async (req,res)=>{
     }
 }
 
-exports.login = async (req, res) => {
-  try {
-    const { email, password } = req.body;
+exports.login = async (req,res)=>{
+    try {
+        const {email,password} = req.body;
+        const db_user = await User.findOne({email});
+        if(!db_user){
+            return res.status(400).json({"message":"Invalid Credentials"});
+        }
+        const flag = await bcrypt.compare(password,db_user.password);
+        if(!flag){
+            return res.status(400).json({"message":"Invalid Credentials"});
+        }
+        const token = await jwt.sign({id:db_user._id},process.env.JWT_SECRET,{expiresIn:process.env.EXPIRES_IN});
+        res.status(200).json({
+            message:"Login Successful",
+            token
+        });
 
-    const db_user = await User.findOne({ email });
-    if (!db_user) {
-      return res.status(400).json({ message: "Invalid Credentials" });
+    }catch(err){
+        console.log(err);
+        return res.status(500).json({"message":"Server Side Error"});
     }
-
-    const isMatch = await bcrypt.compare(password, db_user.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: "Invalid Credentials" });
-    }
-
-    if (!process.env.JWT_SECRET || !process.env.EXPIRES_IN) {
-      return res.status(500).json({
-        message: "JWT configuration missing on server"
-      });
-    }
-
-    const token = jwt.sign(
-      { id: db_user._id },
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.EXPIRES_IN }
-    );
-
-    res.status(200).json({ message: "Login Successful", token });
-
-  } catch (err) {
-    console.error("LOGIN ERROR:", err);
-    res.status(500).json({ message: err.message });
-  }
-};
-
+}
 
 exports.forgetPassword = async (req,res)=>{
     try{
