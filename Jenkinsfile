@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         MONGO_URL  = credentials('MONGO_URL')
-        JWTSECRETE = credentials('JWTSECRETE')
+        JWT_SECRETE = credentials('JWT_SECRETE')
         EXPIRES_IN = credentials('EXPIRES_IN')
         EMAIL      = credentials('EMAIL')
         PASSWORD   = credentials('PASSWORD')
@@ -37,7 +37,7 @@ pipeline {
                   --name node-backend \
                   -e PORT=$PORT \
                   -e MONGO_URL=$MONGO_URL \
-                  -e JWTSECRETE=$JWTSECRETE \
+                  -e JWT_SECRETE=$JWT_SECRETE \
                   -e EXPIRES_IN=$EXPIRES_IN \
                   -e EMAIL=$EMAIL \
                   -e PASSWORD="$PASSWORD"  \
