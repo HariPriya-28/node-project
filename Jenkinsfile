@@ -15,7 +15,7 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 git branch: 'master',
-                    url: 'https://github.com/fullstacktraning/nodejs-appln.git'
+                    url: 'https://github.com/HariPriya-28/node-project.git'
             }
         }
 
