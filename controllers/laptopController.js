@@ -1,9 +1,4 @@
 const Laptop = require("../models/Laptop");
-exports.getAllLaptops = async (req,res)=>{
-    try{
-        const laptops = await Laptop.find();
-        res.status(200).json(laptops);
-    }catch(err){
-        res.status(500).json({"message":"Internal Server Side Error"});
-    }
-}
+const createProductController = require('./createProductController');
+const controller = createProductController(Laptop, 'Laptop');
+exports.getAllLaptops = controller.getAll;

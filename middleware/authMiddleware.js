@@ -3,17 +3,14 @@ const authMiddleware = (req,res,next)=>{
   try {
     const client_token = req.headers.authorization;
     if (!client_token || !client_token.startsWith("Bearer ")){
-        return res.status(400).json({"message":"token is missing"});
+        return res.status(401).json({"message":"Token is missing"});
     }
     const token = client_token.split(" ")[1];
-    const flag = jwt.verify(token,process.env.JWT_SECRET);
-    if(flag){
-        next();
-    }else{
-        return res.status(400).json({"message":"Invalid token"});
-    }
+    const decoded = jwt.verify(token,process.env.JWT_SECRET);
+    req.user = decoded; // make user id available to controllers
+    next();
   } catch (error) {
-    res.status(401).json({"message":"Server Side Error"});
+    return res.status(401).json({"message":"Invalid or expired token"});
   }
 }
 module.exports = authMiddleware;
